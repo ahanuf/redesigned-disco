@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+    <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="{% block meta_description %}A cutting-edge blog platform powered by Django.{% endblock %}" />
+    <meta name="keywords" content="blog, advanced, django, technology, articles, professional" />
+    <meta name="author" content="nobody.com" />
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#0d6efd">
+    <title>{% block title %}Advanced Blog{% endblock %}</title>
+
+    {% load static %}
+    <!-- Bootstrap CSS (v5.2) & Font Awesome -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://unpkg.com">
+    <link 
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" integrity=""
+    rel="stylesheet"
+    crossorigin="anonymous">
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    
+    <!-- Custom Advanced CSS -->
+    
+    
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}" />
+    <link rel="apple-touch-icon" href="{% static 'images/icon-192.png' %}">
+
+    <script defer src="https://unpkg.com/htmx.org@2.0.7"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.19/index.global.min.js"></script>
+    <script defer src="https://unpkg.com/tweetnacl@1.0.3/nacl-fast.js"></script>
+    <script defer src="https://unpkg.com/tweetnacl-util@0.15.1/nacl-util.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register("{% static 'service-worker.js' %}")
+                .then(reg => console.log('Service Worker registered!', reg))
+                .catch(err => console.log('Service Worker registration failed:', err));
+            });
+        }
+    </script>
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+    <!-- Header nav-link -->
+    <header>
+        <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'app:post_list' %}">
+            <img src="{% static 'images/logo.png' %}" alt="Advanced Blog Logo" width="45" height="45" class="me-2" />
+            <span class="fw-bold">ABlogger</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+            aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
+                <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'post_list' %}active{% endif %}" href="{% url 'app:post_list' %}">Home</a>
+                </li>
+                
+                <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'post_create' %}active{% endif %}" href="{% url 'app:post_create' %}">New Post</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'app:about' %}">About</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'tasks' %}active{% endif %}" href="{% url 'tasks:tasks' %}">tasks</a>
+                </li>
+                
+                {% comment %} <li class="nav-item"><a href="{% url 'streaming:live_view' %}">Watch Live</a></li>
+                <li class="nav-item"><a href="{% url 'streaming:broadcast_instructions' %}">Broadcast Live</a></li>
+                {% endcomment %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    Categories
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
+                    {% for category in categories %}
+                    <li>
+                        <a class="dropdown-item" href="{{ category.get_absolute_url }}">{{ category.name }}</a>
+                    </li>
+                    {% empty %}
+                    <li>
+                        <span class="dropdown-item-text">No Categories</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                </li>
+            </ul>
+            <div class="d-flex align-items-center">
+                <form class="d-flex me-3" method="GET" action="{% url 'app:search_posts' %}">
+                <input class="form-control me-2" type="search" placeholder="Search..." name="q" aria-label="Search" />
+                <button class="btn btn-outline-success" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+                </form>
+                <ul class="navbar-nav mb-2 mb-lg-0">
+                {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user me-1"></i>{{ user.username }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li>
+                        <a class="dropdown-item" href="{% url 'app:profile_detail' user.username %}">Profile</a>
+                        </li>
+                        <li>
+                        <a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a>
+                        </li>
+                    </ul>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                    <a class="nav-link" href="{% url 'account_login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link" href="{% url 'account_signup' %}">Sign Up</a>
+                    </li>
+                {% endif %}
+                </ul>
+            </div>
+            </div>
+        </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-fill">
+        <div class="container my-5">
+        {% if messages %}
+            <div class="mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+            </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-12">
+        <div class="container">
+        <div class="row">
+            <div class="col-md-5">
+            <h5>About Advanced Blog</h5>
+            <p>Advanced Blog is a modern platform to share insights, innovations, and ideas in technology and more.</p>
+            </div>
+            <div class="col-md-3">
+            <h5>Quick Links</h5>
+            <ul class="list-unstyled d-flex">
+                <li class="me-3"><a class="text-decoration-none text-light" href="{% url 'app:post_list' %}">Home</a></li>
+                <li class="me-3"><a class="text-decoration-none text-light" href="{% url 'app:post_create' %}">New_Post</a></li>
+                <li class="me-3"><a class="text-decoration-none text-light" href="{% url 'app:search_posts' %}">Search</a></li>
+            </ul>
+            </div>
+            <div class="col-md-4">
+            <h5>Follow Us</h5>
+            <ul class="list-unstyled d-flex">
+                <li class="me-3">
+                <a class="text-light" href="#"><i class="fab fa-facebook fa-lg"></i></a>
+                </li>
+                <li class="me-3">
+                <a class="text-light" href="#"><i class="fab fa-x fa-lg"></i></a>
+                </li>
+                <li class="me-3">
+                <a class="text-light" href="#"><i class="fab fa-instagram fa-lg"></i></a>
+                </li>
+                <li>
+                <a class="text-light" href="#"><i class="fab fa-linkedin fa-lg"></i></a>
+                </li>
+            </ul>
+            </div>
+        </div>
+        <hr class="bg-secondary my-1" />
+        <div class="text-center">
+            <small>&copy; {% now "Y" %} Advanced Blog. All Rights Reserved.</small>
+        </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script defer
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="..."
+    crossorigin="anonymous"></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

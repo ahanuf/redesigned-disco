@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ profile.user.username }}'s Profile - Advanced Blog{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 text-center">
+                                <!-- Profile Avatar -->
+                                {% if profile.avatar %}
+                                    <img
+                                    src="{{ profile.avatar.url }}"
+                                    class="rounded-circle shadow border border-3 img-fluid"
+                                    alt="{{ profile.user.username }}'s avatar"
+                                    width="150"
+                                    height="150"
+                                    style="object-fit:cover;">
+                                    {% else %}
+                                    <img
+                                    src="{% static 'images/default_avatar.png' %}"
+                                    alt="{{ profile.user.username }}"
+                                    class="img-thumbnail rounded-circle"
+                                    style="width: 150px"
+                                    />
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-8">
+                                    <!-- Username & Bio -->
+                                    <h1 class="display-6 fw-bold mb-2">{{ profile.user.username }}</h1>
+                                    {% if profile.bio %}
+                                    <p class="text-body-secondary">{{ profile.bio|linebreaks }}</p>
+                                    {% else %}
+                                    <p class="text-body-secondary fst-italic">No biography has been added yet.</p>
+                                    {% endif %}
+                                    
+                                    <!-- Social Links (Optional) -->
+                                    <div class="d-flex flex-wrap gap-2 mt-3">
+                                        {% if profile.website %}
+                                        <a href="{{ profile.website }}" target="_blank" class="btn btn-outline-dark btn-sm mx-1">
+                                            <i class="fas fa-globe"></i> Website
+                                        </a>
+                                        {% endif %}
+                                    {% if profile.twitter %}
+                                    <a href="https://twitter.com/{{ profile.twitter }}" target="_blank" class="btn btn-outline-primary btn-sm mx-1">
+                                        <i class="fab fa-twitter"></i> Twitter
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if user == profile.user %}
+                    <a href="{% url 'app:edit_profile' %}" class="btn btn-primary">
+                        <i class="fa-solid fa-user-pen"></i>Edit Profile</a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- User's Blog Posts -->
+            <div class="mt-4">
+                <h4 class="text-secondary">Number of Posts: {{ profile.user.posts.all.count }}</h4>
+                {% if profile.user.posts.all %}
+                <div class="list-group">
+                    {% for post in profile.user.posts.all %}
+                    <a href="{{ post.get_absolute_url }}" class="list-group-item list-group-item-action">
+                        <div class="d-flex">
+                            {% if post.image %}
+                                <img
+                                    src="{{ post.image.url }}"
+                                    class="card-img-top img-fluid"
+                                    alt="{{ post.title }}"
+                                    style="width: 50px; height: 50px; object-fit: cover;"
+                                />
+                            {% else %}
+                                <img
+                                    src="{% static 'images/placeholder.png' %}"
+                                    class="card-img-top img-fluid"
+                                    alt="No Image Available"
+                                    style="width: 50px; height: 50px; object-fit: cover;"
+                                />
+                            {% endif %}
+                        <div align="center">
+                            <strong > &nbsp;{{ post.title }}</strong>
+                            <p class="small text-body-secondary mb-0">
+                                <i class="fa-solid fa-calendar"></i> {{ post.created_at|date:"F j, Y" }}</p>
+                        </div>
+                        <span class="badge">{% if post.category %}{{ post.category }}{% endif %}</span>
+                    </div>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-body-secondary">No posts yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

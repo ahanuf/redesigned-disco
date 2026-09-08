@@ -1,0 +1,733 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}About Me - Advanced Blog{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* ===================================================
+       ABOUT PAGE
+       Page-specific styles only
+       =================================================== */
+
+    .about-page {
+        background-color: #0f1217;
+        color: #e5e7eb;
+    }
+
+    .about-page section {
+        padding: 4rem 0;
+    }
+
+    .about-page h1 {
+        font-size: 3rem;
+        font-weight: 800;
+        color: #f8fafc;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
+
+    .about-page h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #06b6c0;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        margin-bottom: 1.5rem;
+    }
+
+    .about-page h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #f8fafc;
+    }
+
+    .about-page p {
+        color: #cbd5e1;
+        line-height: 1.7;
+    }
+
+    /* Hero */
+    .about-hero {
+        background-color: #0b0d12;
+        text-align: center;
+    }
+
+    .about-hero-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .about-hero .subtitle {
+        font-size: 1.25rem;
+        color: #06b6c0;
+    }
+
+    .about-hero img {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid #06b6c0;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+    }
+
+    /* About */
+    .about-section {
+        background-color: #0f1217;
+    }
+
+    .about-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .about-text {
+        flex: 1;
+    }
+
+    .about-text p {
+        margin-bottom: 1rem;
+    }
+
+    /* Skills */
+    .about-skills {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .about-card {
+        background-color: #1f2937;
+        border: 1px solid #334155;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        padding: 1.5rem;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .about-card:hover {
+        background-color: #334155;
+        transform: translateY(-4px);
+    }
+
+    .about-card h3 {
+        margin-bottom: 0.75rem;
+        color: #06b6c0;
+    }
+
+    .about-card ul {
+        padding-left: 1.2rem;
+        margin-bottom: 0;
+    }
+
+    .about-card ul li {
+        margin-bottom: 0.5rem;
+        color: #cbd5e1;
+        font-family: "Courier New", Courier, monospace;
+    }
+
+    /* Progress */
+    .skill-proficiency {
+        margin-top: 2rem;
+    }
+
+    .skill-proficiency h3 {
+        margin-bottom: 1rem;
+    }
+
+    .skill-progress-bar {
+        background-color: #334155;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        margin-bottom: 1rem;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+    }
+
+    .skill-progress {
+        height: 1rem;
+        background-color: #06b6c0;
+        border-radius: 0.5rem;
+        text-align: right;
+        padding-right: 0.5rem;
+        color: #f8fafc;
+        font-size: 0.75rem;
+        font-weight: 600;
+        line-height: 1rem;
+    }
+
+    /* Data table */
+    .data-summary {
+        margin-top: 2rem;
+        width: 100%;
+        border: 1px solid #334155;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    .data-summary-title {
+        padding: 1rem;
+        margin: 0;
+        background-color: #1f2937;
+        color: #f8fafc;
+    }
+
+    .data-summary table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .data-summary th {
+        background-color: #0f172a;
+        color: #cbd5e1;
+        font-weight: 600;
+        padding: 0.75rem;
+        text-align: left;
+    }
+
+    .data-summary td {
+        background-color: #1e293b;
+        color: #cbd5e1;
+        border-bottom: 1px solid #334155;
+        padding: 0.75rem;
+    }
+
+    /* Projects */
+    .projects-section {
+        background-color: #0b0d12;
+    }
+
+    .projects-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .project-card {
+        background-color: #1f2937;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    .project-card:hover {
+        transform: translateY(-5px);
+        background-color: #334155;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+    }
+
+    .project-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .project-content {
+        padding: 1.5rem;
+    }
+
+    .project-content h3 {
+        margin-bottom: 0.75rem;
+        color: #06b6c0;
+    }
+
+    .project-content a {
+        color: #06b6c0;
+        font-weight: 500;
+    }
+
+    .project-content a:hover {
+        color: #192937;
+    }
+
+    /* Education */
+    .education-section {
+        background-color: #0b0d12;
+    }
+
+    .education-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .education-list {
+        flex: 1;
+    }
+
+    .education-item {
+        background-color: #1f2937;
+        border: 1px solid #334155;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
+
+    .education-item h3 {
+        margin-bottom: 0.5rem;
+        color: #06b6c0;
+    }
+
+    .education-item p {
+        margin-bottom: 0.25rem;
+    }
+
+    .hobbies {
+        flex: 1;
+    }
+
+    .hobbies ul {
+        padding-left: 1.2rem;
+    }
+
+    .hobbies li {
+        margin-bottom: 0.75rem;
+        color: #cbd5e1;
+        font-family: "Courier New", Courier, monospace;
+    }
+
+    /* Contact */
+    .contact-section {
+        background-color: #0f1217;
+    }
+
+    .contact-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .about-btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .about-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .about-btn-primary {
+        background-color: #06b6c0;
+        color: #f8fafc;
+    }
+
+    .about-btn-secondary {
+        background-color: #334155;
+        color: #cbd5e1;
+        border: 1px solid #475569;
+    }
+
+    /* Responsive */
+    @media screen and (min-width: 768px) {
+        .about-wrapper {
+            flex-direction: row;
+        }
+
+        .about-skills {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .projects-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .education-wrapper {
+            flex-direction: row;
+        }
+
+        .contact-buttons {
+            flex-wrap: nowrap;
+        }
+    }
+
+    @media screen and (max-width: 480px) {
+        .about-page h1 {
+            font-size: 2.5rem;
+        }
+
+        .about-page h2 {
+            font-size: 1.75rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="about-page">
+
+    <!-- HERO -->
+    <section class="about-hero">
+        <div class="container about-hero-content">
+
+            <h1>Hello, I'm [Someone Unnecessary]</h1>
+
+            <p class="subtitle">
+                Intermediate Python Programmer & Aspiring Backend Developer
+            </p>
+
+            <img
+                src="{% static 'about/profile_photo.png' %}"
+                alt="Profile Photo"
+            />
+
+        </div>
+    </section>
+
+
+    <!-- ABOUT -->
+    <section class="about-section">
+        <div class="container">
+
+            <div class="about-wrapper">
+
+                <div class="about-text">
+
+                    <h2>About Me</h2>
+
+                    <p>
+                        I am a passionate and driven young developer with a solid
+                        foundation in Python programming. With hands-on experience
+                        in Django and PostgreSQL, I aspire to become a professional
+                        backend developer and continuously expand my skill set in
+                        advanced software engineering.
+                    </p>
+
+                    <p>
+                        My journey in technology has led me to explore diverse
+                        domains such as machine learning, artificial intelligence,
+                        and quantum mechanics. I am always eager to dive into
+                        complex technical challenges—whether it's configuring
+                        servers, optimizing database schemas, or tinkering with
+                        embedded systems.
+                    </p>
+
+                    <p>
+                        Beyond coding, I have a deep fascination for astronomy
+                        and gadgets. I enjoy keeping up with the latest advancements
+                        in space exploration and cutting-edge devices.
+                    </p>
+
+
+                    <!-- Skill Proficiency -->
+                    <div class="skill-proficiency">
+
+                        <h3>Skill Proficiency</h3>
+
+                        <div class="skill-progress-bar">
+                            <div class="skill-progress" style="width: 20%;">
+                                Python – 20%
+                            </div>
+                        </div>
+
+                        <div class="skill-progress-bar">
+                            <div class="skill-progress" style="width: 25%;">
+                                Django – 25%
+                            </div>
+                        </div>
+
+                        <div class="skill-progress-bar">
+                            <div class="skill-progress" style="width: 25%;">
+                                PostgreSQL – 25%
+                            </div>
+                        </div>
+
+                        <div class="skill-progress-bar">
+                            <div class="skill-progress" style="width: 25%;">
+                                Nginx – 25%
+                            </div>
+                        </div>
+
+                        <div class="skill-progress-bar">
+                            <div class="skill-progress" style="width: 30%;">
+                                Networking & Security – 30%
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <!-- DATA SUMMARY -->
+                    <div class="data-summary">
+
+                        <h3 class="data-summary-title">
+                            Data Summary
+                        </h3>
+
+                        <table>
+
+                            <thead>
+                                <tr>
+                                    <th>Metric</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                <tr>
+                                    <td>Projects Completed</td>
+                                    <td>3+</td>
+                                </tr>
+
+                                <tr>
+                                    <td>Hackathons Participated</td>
+                                    <td>0+</td>
+                                </tr>
+
+                                <tr>
+                                    <td>Certifications</td>
+                                    <td>0+</td>
+                                </tr>
+
+                                <tr>
+                                    <td>Years of Coding Experience</td>
+                                    <td>1.0+</td>
+                                </tr>
+
+                                <tr>
+                                    <td>GitHub Stars</td>
+                                    <td>0+</td>
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SKILLS -->
+                <div class="about-skills">
+
+                    <div class="about-card">
+                        <h3>Core Skills</h3>
+
+                        <ul>
+                            <li>Python (Progressing to Intermediate )</li>
+                            <li>Django Framework</li>
+                            <li>PostgreSQL & Relational Databases</li>
+                            <li>RESTful API Design (Django REST Framework)</li>
+                            <li>Linux Server Administration (Ubuntu + Nginx)</li>
+                        </ul>
+                    </div>
+
+                    <div class="about-card">
+                        <h3>Technologies & Tools</h3>
+
+                        <ul>
+                            <li>Raspberry Pi</li>
+                            <li>Git & GitHub</li>
+                            <li>Docker, Gunicorn, Nginx</li>
+                            <li>Virtual Environments</li>
+                            <li>Wireshark & Burp Suite</li>
+                        </ul>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- PROJECTS -->
+    <section class="projects-section">
+
+        <div class="container">
+
+            <h2 class="text-center">
+                Projects & Experience
+            </h2>
+
+            <div class="projects-grid">
+
+                <div class="project-card">
+                    <img
+                        src="{% static 'about/proj.jpg' %}"
+                        alt="Django Live Video Streaming"
+                    >
+
+                    <div class="project-content">
+                        <h3>Django Live Video Streaming</h3>
+
+                        <p>
+                            Implemented a full-fledged live streaming feature
+                            using Django Channels, WebRTC, and Redis on an
+                            Ubuntu Server.
+                        </p>
+
+                        <a href="https://github.com/ahanuf/"
+                           target="_blank"
+                           rel="noopener noreferrer">
+                            View on GitHub →
+                        </a>
+                    </div>
+                </div>
+
+
+
+                <div class="project-card">
+                    <img
+                        src="{% static 'about/project.jpg' %}"
+                        alt="Custom SBC Design"
+                    >
+
+                    <div class="project-content">
+                        <h3>Custom SBC Design</h3>
+
+                        <p>
+                            Conceptualized and prototyped a custom single-board
+                            computer featuring a multi-core processor, NPU,
+                            sensors, and extensive I/O capabilities.
+                        </p>
+
+                        <a href="https://github.com/ahanuf/"
+                           target="_blank"
+                           rel="noopener noreferrer">
+                            View on GitHub →
+                        </a>
+                    </div>
+                </div>
+
+
+                <div class="project-card">
+<img
+                        src="{% static 'about/project_man.png' %}"
+                        alt="Custom SBC Design"
+                    >
+                    <div class="project-content">
+                        <h3>Personal Website: Home Page</h3>
+
+                        <p>
+                            This is the landing page of my personal portfolio
+                            site, built with Django and styled from scratch.
+                        </p>
+
+                        <a href="{% url 'app:post_list' %}">
+                            Visit Home →
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- EDUCATION -->
+    <section class="education-section">
+
+        <div class="container education-wrapper">
+
+            <div class="education-list">
+
+                <h2>Education & Certifications</h2>
+
+                <div class="education-item">
+                    <h3>B.Sc. in Mathematics (In Progress)</h3>
+                    <p>Shahjalal University of Science and Technology, Sylhet</p>
+                    <p>
+                        Expected Graduation: Not expected at long sight.
+                    </p>
+                </div>
+
+                <div class="education-item">
+                    <h3>Python Developer Certification (Basic)</h3>
+                    <p>Issued by [Certifying Body]</p>
+                    <p>Valid through: Until a real one is obtained</p>
+                </div>
+
+                <div class="education-item">
+                    <h3>Django Professional Training</h3>
+                    <p>Completed intensive backend development workshop</p>
+                    <p>Completed: Until further notice</p>
+                </div>
+
+            </div>
+
+
+            <div class="hobbies">
+
+                <h2>Interests & Hobbies</h2>
+
+                <ul>
+                    <li>Artificial Intelligence & Machine Learning research</li>
+                    <li>Astronomy & Space Exploration</li>
+                    <li>Quantum Mechanics concepts and simulations</li>
+                    <li>Ethical Hacking & Network Security</li>
+                    <li>Building IoT projects with Raspberry Pi</li>
+                    <li>Exploring new gadgets and emerging technologies</li>
+                </ul>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CONTACT -->
+    <section class="contact-section">
+
+        <div class="container text-center">
+
+            <h2>Get in Touch</h2>
+
+            <p>
+                Feel free to connect with me for collaborations,
+                job opportunities, or just to say hello!
+            </p>
+
+            <div class="contact-buttons">
+
+                <a href="mailto:ahanuf00@gmail.com"
+                   class="about-btn about-btn-primary">
+                    Email Me
+                </a>
+
+                <a href="https://www.linkedin.com/in/ahanuf-hossain-arnob-693911422/"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="about-btn about-btn-secondary">
+                    LinkedIn Profile
+                </a>
+
+                <a href="https://github.com/ahanuf"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="about-btn about-btn-secondary">
+                    GitHub Portfolio
+                </a>
+
+                <a href="{% url 'app:post_list' %}"
+                   class="about-btn about-btn-secondary">
+                    Blog Website
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

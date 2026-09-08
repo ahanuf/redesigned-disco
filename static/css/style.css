@@ -1,0 +1,207 @@
+/* ===================================================
+  Advanced Blog - Custom Professional Styles
+   =================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+/* 1. CSS Variables & Font Import */
+:root {
+  --primary-color: #4a90e2;
+  --secondary-color: #50e3c2;
+  --background-color: rgb(211, 211, 211);
+  --text-color: #333;
+  --header-bg: #1c1c1c;
+  --header-text: #e1e1e1;
+  --footer-bg: #1c1c1c;
+  --footer-text: #aab2bd;
+  --link-color: var(--primary-color);
+  --font-family: 'Roboto', sans-serif;
+}
+
+
+/* 2. Global Resets & Base Styles */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+/* 3. Header Styles */
+header {
+  background-color: var(--header-bg);
+}
+
+.navbar-brand span {
+  font-size: 1.25rem;
+}
+
+.navbar-nav .nav-link {
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link:focus {
+  color: var(--primary-color);
+}
+
+/* 4. Search Form */
+header form input[type="search"] {
+  padding: 0.45rem 0.75rem;
+  border: none;
+  border-radius: 4px 0 0 4px;
+  outline: none;
+}
+
+header form button {
+  padding: 0.45rem 0.9rem;
+  border: none;
+  background-color: var(--primary-color);
+  color: #fff;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+header form button:hover,
+header form button:focus {
+  background-color: var(--secondary-color);
+}
+
+/* 5. Main Content Enhancements */
+.container {
+  max-width: 1200px;
+}
+
+.card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card-img-top {
+  height: 200px;
+  object-fit: cover;
+}
+
+
+
+/* 6. Pagination & Component Refinements */
+.pagination .page-link {
+  border-radius: 10px;
+}
+
+/* 7. Footer Styles */
+footer {
+  background-color: var(--footer-bg);
+  color: var(--footer-text);
+  padding: 1.5rem 0;
+}
+
+footer h5 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+footer a {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.3s ease;
+}
+
+footer a:hover,
+footer a:focus {
+  color: var(--primary-color);
+}
+
+/* 8. Responsive Adjustments */
+@media (max-width: 768px) {
+  header .navbar-nav {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  header form {
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  body {
+    font-size: 0.9rem;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+}
+
+/* ===================================================
+   CKEditor 5 - Light Writing Area
+   =================================================== */
+
+.ck-editor {
+    color: #212529;
+}
+
+.ck-editor__main > .ck-editor__editable,
+.ck-editor__editable_inline {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    min-height: 400px;
+}
+
+/* Text inside the editor */
+.ck-editor__editable_inline p,
+.ck-editor__editable_inline h1,
+.ck-editor__editable_inline h2,
+.ck-editor__editable_inline h3,
+.ck-editor__editable_inline h4,
+.ck-editor__editable_inline h5,
+.ck-editor__editable_inline h6,
+.ck-editor__editable_inline li,
+.ck-editor__editable_inline blockquote {
+    color: #212529 !important;
+}
+
+/* Placeholder */
+.ck-editor__editable_inline.ck-placeholder::before {
+    color: #6c757d !important;
+}
+
+/* CKEditor toolbar */
+.ck-editor__top {
+    background-color: #f8f9fa;
+}
+
+/* Keep toolbar icons/buttons visible */
+.ck.ck-toolbar {
+    background-color: #f8f9fa;
+    border-color: #ced4da;
+}
+
+.ck.ck-toolbar .ck-button {
+    color: #212529;
+}
+
+.ck.ck-toolbar .ck-button:hover,
+.ck.ck-toolbar .ck-button.ck-on {
+    color: #212529;
+    background-color: #e9ecef;
+}
