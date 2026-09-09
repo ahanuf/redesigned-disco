@@ -1,0 +1,17 @@
+{
+    "name": "Django Development",
+    "image": "mcr.microsoft.com/devcontainers/python:1-3.12-bookworm",
+
+    "forwardPorts": [8000],
+
+    "portsAttributes": {
+        "8000": {
+            "label": "Django",
+            "onAutoForward": "openBrowser",
+            "visibility": "public"
+        }
+    },
+
+    "postCreateCommand": "pip install -r requirements.txt",
+    "postStartCommand": "bash .devcontainer/start.sh"
+}
