@@ -34,9 +34,21 @@ def about(request):
 
 # Create your views here.
 def post_list(request):
-    posts = Post.objects.filter(published=True).exclude(slug='').order_by("-created_at")
+    posts = (
+        Post.objects
+        .filter(published=True)
+        .exclude(slug="")
+        .select_related("author", "category")
+        .order_by("-created_at")
+    )
+
     categories = Category.objects.all()
-    context = {"posts": posts, "categories": categories}
+
+    context = {
+        "posts": posts,
+        "categories": categories,
+    }
+
     return render(request, "app/post_list.html", context)
 
 
