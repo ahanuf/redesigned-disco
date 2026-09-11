@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -41,6 +42,9 @@ def post_list(request):
         .select_related("author", "category")
         .order_by("-created_at")
     )
+
+    paginator = Paginator(posts, 12)
+    posts = paginator.get_page(request.GET.get("page"))
 
     categories = Category.objects.all()
 
