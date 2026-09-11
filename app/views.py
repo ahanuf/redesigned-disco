@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.db import models
 from .models import Post, Category, Comment, Profile 
 from .forms import PostForm, CommentForm ,ProfileForm
-from django.core.paginator import Paginator
+
 #
 def dashboard(request):
     user = request.user
@@ -34,26 +34,9 @@ def about(request):
 
 # Create your views here.
 def post_list(request):
-    posts = (
-        Post.objects
-        .filter(published=True)
-        .exclude(slug="")
-        .select_related("author", "category")
-        .prefetch_related("author__profile")
-        .order_by("-created_at")
-    )
-
-    paginator = Paginator(posts, 12)
-    page_number = request.GET.get("page")
-    posts = paginator.get_page(page_number)
-
+    posts = Post.objects.filter(published=True).exclude(slug='').order_by("-created_at")
     categories = Category.objects.all()
-
-    context = {
-        "posts": posts,
-        "categories": categories,
-    }
-
+    context = {"posts": posts, "categories": categories}
     return render(request, "app/post_list.html", context)
 
 
