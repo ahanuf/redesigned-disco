@@ -8,7 +8,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", include('app.urls')),
-    path("", include('chat.urls')),
+    # path("", include('chat.urls')),
     path("tasks/", include('tasks.urls')),
     path('ckeditor5/', include('django_ckeditor_5.urls')),
     path('accounts/',include('allauth.urls')),

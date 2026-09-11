@@ -1,22 +1,33 @@
+import os
 from pathlib import Path
-from channels.auth import AuthMiddlewareStack
+from dotenv import load_dotenv
+# from channels.auth import AuthMiddlewareStack
 from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+load_dotenv(BASE_DIR / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-@#!k76ay&eokroil1&jmgx598bj9wrmz5f!_luh*+4p)3#z8gu'
+SECRET_KEY = os.getenv("SECRET_KEY")
+
+if not SECRET_KEY:
+    raise RuntimeError("SECRET_KEY environment variable is not set")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = ['127.0.0.1',
-    'localhost','192.168.56.103']
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.getenv(
+        "ALLOWED_HOSTS",
+        "127.0.0.1,localhost"
+    ).split(",")
+    if host.strip()
+]
 
 # CSRF_COOKIE_SECURE = True  # CSRF cookies are only sent over HTTPS
 # SESSION_COOKIE_SECURE = True  # Session cookies are only sent over HTTPS
@@ -32,7 +43,7 @@ ALLOWED_HOSTS = ['127.0.0.1',
 # Application definition
 
 INSTALLED_APPS = [
-    "daphne",
+    # "daphne",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,7 +56,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     
     'corsheaders',
-    "channels",
+    # "channels",
     'rest_framework',
     'rest_framework_simplejwt',
     "rest_framework_simplejwt.token_blacklist",
@@ -55,7 +66,7 @@ INSTALLED_APPS = [
     
     "app",
     'tasks.apps.TasksConfig',
-    'chat', 
+    # 'chat', 
     "widget_tweaks",
 ]
 
@@ -77,9 +88,17 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:8000",
-    "http://0.0.0.0:8000",
+    origin.strip()
+    for origin in os.getenv(
+        "CSRF_TRUSTED_ORIGINS",
+        "http://localhost:8000,https://localhost:8000"
+    ).split(",")
+    if origin.strip()
 ]
+
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_SAMESITE = "Lax"
 
 ROOT_URLCONF = 'sit.urls'
 
@@ -103,30 +122,35 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'sit.wsgi.application'
-ASGI_APPLICATION = "sit.asgi.application"
+# ASGI_APPLICATION = "sit.asgi.application"
+
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postdatabase',
-        'USER': 'ubun',
-        'PASSWORD': 'asdfmypassword',
-        'HOST': 'localhost',
-        'PORT': '5432', 
+        'NAME': os.getenv('POSTGRES_DB', 'postdatabase'),
+        'USER': os.getenv('POSTGRES_USER', 'ubun'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
+        'HOST': os.getenv('POSTGRES_HOST', 'localhost'),
+        'PORT': os.getenv('POSTGRES_PORT', '5432'),
     }
 }
 
 # Channel layer backed by Redis
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            'hosts': [('localhost', 6379)],
-        },
-    },
-}
+
+# REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
+# REDIS_PORT = int(os.getenv('REDIS_PORT', '6379'))
+
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             'hosts': [(REDIS_HOST, REDIS_PORT)],
+#         },
+#     },
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -207,19 +231,18 @@ MEDIA_ROOT = BASE_DIR / "media/"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ✅ CACHING (REDIS)
-CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/1',
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        }
-    }
-}
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django_redis.cache.RedisCache',
+#         'LOCATION': f'redis://{REDIS_HOST}:{REDIS_PORT}/1',
+#         'OPTIONS': {
+#             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+#         }
+#     }
+# }
 
-CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
-
-CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379/0"
+# CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
+# CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
 
 
 

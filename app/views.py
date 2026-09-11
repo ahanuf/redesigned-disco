@@ -161,6 +161,9 @@ def edit_profile(request):
         form = ProfileForm(instance=profile)
     return render(request, 'app/edit_profile.html', {'form': form})
 
+@login_required
 def custom_login_redirect(request):
-    username = request.user.username
-    return redirect(reverse("app:profile_detail", kwargs={"username": username}))
+    return redirect(
+        "app:profile_detail",
+        username=request.user.username
+    )
