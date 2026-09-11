@@ -29,16 +29,24 @@ ALLOWED_HOSTS = [
     if host.strip()
 ]
 
-# CSRF_COOKIE_SECURE = True  # CSRF cookies are only sent over HTTPS
-# SESSION_COOKIE_SECURE = True  # Session cookies are only sent over HTTPS
-# SECURE_SSL_REDIRECT = True  # Redirect HTTP to HTTPS
-# SECURE_HSTS_SECONDS = 31536000  # Enable HTTP Strict Transport Security (HSTS)
-# SECURE_HSTS_PRELOAD = True  # Preload HSTS
-# SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Apply HSTS to subdomains as well
-# SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent browsers from interpreting files as something else
-# X_FRAME_OPTIONS = 'DENY'  # Protect against clickjacking
-# SECURE_BROWSER_XSS_FILTER = True  # Enable browser's XSS filtering
-# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+CSRF_COOKIE_SECURE = os.getenv("CSRF_COOKIE_SECURE", "False").lower() == "true"
+SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE", "False").lower() == "true"
+
+SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT", "False").lower() == "true"
+
+SECURE_HSTS_SECONDS = int(os.getenv("SECURE_HSTS_SECONDS", "0"))
+SECURE_HSTS_INCLUDE_SUBDOMAINS = (
+    os.getenv("SECURE_HSTS_INCLUDE_SUBDOMAINS", "False").lower() == "true"
+)
+SECURE_HSTS_PRELOAD = (
+    os.getenv("SECURE_HSTS_PRELOAD", "False").lower() == "true"
+)
+
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+X_FRAME_OPTIONS = "DENY"
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Application definition
 
@@ -128,13 +136,16 @@ WSGI_APPLICATION = 'sit.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB', 'postdatabase'),
-        'USER': os.getenv('POSTGRES_USER', 'ubun'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
-        'HOST': os.getenv('POSTGRES_HOST', 'localhost'),
-        'PORT': os.getenv('POSTGRES_PORT', '5432'),
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("POSTGRES_DB", "postdatabase"),
+        "USER": os.getenv("POSTGRES_USER", "ubun"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", ""),
+        "HOST": os.getenv("POSTGRES_HOST", "localhost"),
+        "PORT": os.getenv("POSTGRES_PORT", "5432"),
+        "OPTIONS": {
+            "sslmode": os.getenv("POSTGRES_SSLMODE", "prefer"),
+        },
     }
 }
 

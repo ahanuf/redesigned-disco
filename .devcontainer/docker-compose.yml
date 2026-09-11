@@ -11,6 +11,8 @@ services:
       redis:
         condition: service_healthy
     environment:
+      SECRET_KEY: "31y6x@c&ys4iu)ph!xs^dk#48jxq#$_)m$bs45ci&7$z)ir2c9"
+      DEBUG: "True"
       POSTGRES_DB: postdatabase
       POSTGRES_USER: ubun
       POSTGRES_PASSWORD: devpassword
